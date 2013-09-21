@@ -1,6 +1,6 @@
 // RTC_DS3231.h
 /******************************************************************************
-	NAME   : RTC_DS3231.cpp
+	NAME   : RTC_DS3231.h
 	Version: 0.1
 	Created: 06/09/2013
 	Author : TomTheTinkerer  (TomTheTinkerer.com)
