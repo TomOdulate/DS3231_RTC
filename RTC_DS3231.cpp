@@ -5,7 +5,7 @@
 	Author : TomTheTinkerer  (TomTheTinkerer.com)
 	NOTES  : RTC based on the DS3231 RTC chip. Please ensure that you refer to
 			datasheet, http://datasheets.maximintegrated.com/en/ds/DS3231.pdf
-			Communication is via I2C using wire.h.
+			Communication is via I2C using wire.h.	
 
 ******************************************************************************/
 #include "RTC_DS3231.h"
