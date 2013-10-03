@@ -1,13 +1,19 @@
 // RTC_DS3231.h
 /******************************************************************************
-	NAME   : RTC_DS3231.h
-	Version: 0.1
+	NAME   : RTC_DS3231.cpp
+	Version: 0.2
 	Created: 06/09/2013
-	Author : TomTheTinkerer  (TomTheTinkerer.com)
+	Author : TomTheTinkerer.com
 	NOTES  : RTC based on the DS3231 RTC chip. Please ensure that you refer to
 			datasheet, http://datasheets.maximintegrated.com/en/ds/DS3231.pdf
 			Communication is via I2C using wire.h.  Credit where its due! The 
 			DateTime class adapted from RTCLib from jeelabs.
+			
+			Board			I2C / TWI pins
+			Uno, Ethernet	A4 (SDA), 	A5 (SCL)
+			Mega2560		20 (SDA), 	21 (SCL)
+			Leonardo		 2 (SDA), 	 3 (SCL)
+			Due				20 (SDA), 	21 (SCL), SDA1, SCL1
 
 ******************************************************************************/
 
@@ -25,7 +31,6 @@
 #endif
 
 #include <Wire.h>
-
 
 /* Register addresses. */
 #define DS3231_ADDRESS			0x68	// The I2C address of the DS1307 chip. Default is 1101000 (104 decimal)
@@ -78,51 +83,37 @@ extern uint8_t bcd2bin (uint8_t val);				// Conversion from bcd to decimal
 extern uint8_t bin2bcd (uint8_t val);				// Conversion from decimal to bcd
 
 static const uint8_t daysInMonth[] PROGMEM = { 31,28,31,30,31,30,31,31,30,31,30,31 };
-//const char* months[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 
 /*  Simple general-purpose date/time class (no TZ / DST / leap second handling!) */
 class DateTime
 {
 	public:
-    DateTime (uint32_t t =0);
-    DateTime (uint16_t year, uint8_t month, uint8_t day,
-              uint8_t hour =0, uint8_t min =0, uint8_t sec =0);
-    DateTime (const char* date, const char* time);
-    uint16_t year() const {
-        return 2000 + yOff;
-    }
-    uint8_t month() const {
-        return m;
-    }
-    uint8_t day() const {
-        return d;
-    }
-    uint8_t hour() const {
-        return hh;
-    }
-    uint8_t minute() const {
-        return mm;
-    }
-    uint8_t second() const {
-        return ss;
-    }
-    uint8_t dayOfWeek() const;
+		DateTime (uint32_t t =0);
+		DateTime (uint16_t year, uint8_t month, uint8_t day, uint8_t hour =0, uint8_t min =0, uint8_t sec =0);
+		DateTime (const char* date, const char* time);
+		uint16_t year() const { return 2000 + yOff; }
+		uint8_t month() const { return m; }
+		uint8_t day() const { return d; }
+		uint8_t hour() const { return hh; }
+		uint8_t minute() const { return mm; }
+		uint8_t second() const { return ss; }
+		uint8_t dayOfWeek() const;
 
-    long secondstime() const;						// 32-bit times as seconds since 1/1/2000    
-    uint32_t unixtime(void) const;					// 32-bit times as seconds since 1/1/1970    
-    char* toString(char* buf, int maxlen) const;	// as a string
-    void operator+=(uint32_t);						// add additional time
+		long secondstime() const;						// 32-bit times as seconds since 1/1/2000    
+		uint32_t unixtime(void) const;					// 32-bit times as seconds since 1/1/1970    
+		char* toString(char* buf, int maxlen) const;	// As a string
+		void operator+=(uint32_t);						// Add additional time
 
 	protected:
-    uint8_t yOff, m, d, hh, mm, ss;
+		uint8_t yOff, m, d, hh, mm, ss;
 };
 
 class RTC_DS3231
 {
 	public:
-		void init();										// Initialises the wire library, must be called once	
+		RTC_DS3231();										// Initialises the wire library, so must be called once	
 		void SetDateTime(const DateTime& dt);				// Set the RTC time (and date!)
-		static DateTime now();								// Returns the current time.
+		DateTime now();										// Returns the current time.
 		DateTime GetAlarm1();								// Returns the current Alarm 1 time setting
 		DateTime GetAlarm2();								// Returns the current Alarm 2 time setting
 		uint8_t GetRegister(uint8_t);						// Returns a particular register byte

@@ -1,17 +1,24 @@
 /******************************************************************************
 	NAME   : RTC_DS3231.cpp
-	Version: 0.1
+	Version: 0.2
 	Created: 06/09/2013
-	Author : TomTheTinkerer  (TomTheTinkerer.com)
+	Author : TomTheTinkerer.com
 	NOTES  : RTC based on the DS3231 RTC chip. Please ensure that you refer to
 			datasheet, http://datasheets.maximintegrated.com/en/ds/DS3231.pdf
-			Communication is via I2C using wire.h.	
+			Communication is via I2C using wire.h.  Credit where its due! The 
+			DateTime class adapted from RTCLib from jeelabs.
+			
+			Board			I2C / TWI pins
+			Uno, Ethernet	A4 (SDA), 	A5 (SCL)
+			Mega2560		20 (SDA), 	21 (SCL)
+			Leonardo		 2 (SDA), 	 3 (SCL)
+			Due				20 (SDA), 	21 (SCL), SDA1, SCL1
 
 ******************************************************************************/
 #include "RTC_DS3231.h"
 
 /*	Simply initialises the wire library */
-void RTC_DS3231::init()
+RTC_DS3231::RTC_DS3231()
 {
 	Wire.begin();
 }
@@ -214,8 +221,7 @@ void RTC_DS3231::SetRegister(uint8_t reg, uint8_t byte)
 		SetRegister( DS3231_TIME_HOURS,		// The register address.
 					 DS3231_BIT_12_24,		// The bit you need to change
 					 true					// Turn it on.
-					); 
-*/
+					);   */
 uint8_t RTC_DS3231::SwitchRegisterBit(uint8_t reg, uint8_t bit, bool onOff )
 {
 	if(onOff)
