@@ -28,29 +28,29 @@ RTC_DS3231::RTC_DS3231()
 void RTC_DS3231::SetDateTime(const DateTime& dt)
 {
     Wire.beginTransmission(DS3231_ADDRESS);	// Wake the I2C device
-    Wire.SEND(0);							// Advance its internal register pointer.
+    Wire.SEND(0);				// Advance its internal register pointer.
     Wire.SEND(bin2bcd(dt.second()));		// Send data...
     Wire.SEND(bin2bcd(dt.minute()));
     Wire.SEND(bin2bcd(dt.hour()));
-    Wire.SEND(bin2bcd(0));					// Skip the day of week.
+    Wire.SEND(bin2bcd(0));			// Skip the day of week.
     Wire.SEND(bin2bcd(dt.day()));		
     Wire.SEND(bin2bcd(dt.month()));
     Wire.SEND(bin2bcd(dt.year() - 2000));
-    Wire.endTransmission();					// End the transmission
+    Wire.endTransmission();			// End the transmission
 }
 
 
 /* Returns the current time as a DateTime object */
 DateTime RTC_DS3231::now()
 {
-    Wire.beginTransmission(DS3231_ADDRESS);		// Wake the I2C device
-    Wire.SEND(0);								// Advance its internal register pointer.
-    Wire.endTransmission();						// End the transmission
-    Wire.requestFrom(DS3231_ADDRESS, 7);		// Request 7 bytes from device
+    Wire.beginTransmission(DS3231_ADDRESS);	// Wake the I2C device
+    Wire.SEND(0);				// Advance its internal register pointer.
+    Wire.endTransmission();			// End the transmission
+    Wire.requestFrom(DS3231_ADDRESS, 7);	// Request 7 bytes from device
     uint8_t ss = bcd2bin(Wire.RECEIVE() & 0x7F);// Read the data...
     uint8_t mm = bcd2bin(Wire.RECEIVE());
     uint8_t hh = bcd2bin(Wire.RECEIVE());
-    Wire.RECEIVE();								// Skip the day of week.
+    Wire.RECEIVE();				// Skip the day of week.
     uint8_t d = bcd2bin(Wire.RECEIVE());
     uint8_t m = bcd2bin(Wire.RECEIVE());
     uint16_t y = bcd2bin(Wire.RECEIVE()) + 2000;
@@ -62,15 +62,15 @@ DateTime RTC_DS3231::now()
 DateTime RTC_DS3231::GetAlarm1()
 {
 	Wire.beginTransmission(DS3231_ADDRESS);		// Wake the I2C device
-	Wire.SEND(DS3231_TIME_ALARM1);				// Advance its internal register pointer.
-    Wire.endTransmission();						// End the transmission
+	Wire.SEND(DS3231_TIME_ALARM1);			// Advance its internal register pointer.
+	Wire.endTransmission();				// End the transmission
 	Wire.requestFrom(DS3231_ADDRESS, 4);		// Request 5 bytes from device
-    uint8_t ss = bcd2bin(Wire.RECEIVE() );		// Read the data...
-    uint8_t mm = bcd2bin(Wire.RECEIVE());
-    uint8_t hh = bcd2bin(Wire.RECEIVE());
+	uint8_t ss = bcd2bin(Wire.RECEIVE() );		// Read the data...
+	uint8_t mm = bcd2bin(Wire.RECEIVE());
+	uint8_t hh = bcd2bin(Wire.RECEIVE());
 	uint8_t d = bcd2bin( Wire.RECEIVE());	
 	DateTime dt(2000, 0, d, hh, mm, ss);		// Create our return value   
-	return dt;									// Return it
+	return dt;					// Return it
 }
 
 
@@ -78,14 +78,14 @@ DateTime RTC_DS3231::GetAlarm1()
 DateTime RTC_DS3231::GetAlarm2()
 {
 	Wire.beginTransmission(DS3231_ADDRESS);		// Wake the I2C device
-	Wire.SEND(DS3231_TIME_ALARM2);				// Advance its internal register pointer.
-    Wire.endTransmission();						// End the transmission
-    Wire.requestFrom(DS3231_ADDRESS, 3);		// Request 3 bytes from device
-    uint8_t mm = bcd2bin(Wire.RECEIVE());		// Read the data...
-    uint8_t hh = bcd2bin(Wire.RECEIVE());
+	Wire.SEND(DS3231_TIME_ALARM2);			// Advance its internal register pointer.
+	Wire.endTransmission();				// End the transmission
+	Wire.requestFrom(DS3231_ADDRESS, 3);		// Request 3 bytes from device
+	uint8_t mm = bcd2bin(Wire.RECEIVE());		// Read the data...
+	uint8_t hh = bcd2bin(Wire.RECEIVE());
 	uint8_t d = bcd2bin(Wire.RECEIVE());
 	DateTime dt(2000, 0, 0, hh, mm, 00);		// Create our return value    	
-	return dt;									// Return it
+	return dt;					// Return it
 }
 
 
@@ -98,7 +98,7 @@ void RTC_DS3231::SetAlarm1(DateTime dt, bool on, Alarm1TriggerType type)
 	uint8_t secs	= bin2bcd( dt.second()	);	
 	uint8_t mins	= bin2bcd( dt.minute()	);
 	uint8_t hours	= bin2bcd( dt.hour()	);
-	uint8_t date	= bin2bcd( dt.day()		);
+	uint8_t date	= bin2bcd( dt.day()	);
 	
 	// Set the Alarm Mask bits, (Alarm rate) See DS3231 datasheet, table 2 p12.
 	switch( type )
@@ -131,12 +131,12 @@ void RTC_DS3231::SetAlarm1(DateTime dt, bool on, Alarm1TriggerType type)
 
 	// Now all bits are set, transmit to DS3231
 	Wire.beginTransmission(DS3231_ADDRESS);		// Wake the correct I2C device.
-	Wire.SEND(DS3231_TIME_ALARM1);				// Advance its internal register pointer.
-    Wire.SEND(bin2bcd(dt.second()));			// Send data bytes...
-    Wire.SEND(bin2bcd(dt.minute()));			
-    Wire.SEND(bin2bcd(dt.hour()));
+	Wire.SEND(DS3231_TIME_ALARM1);			// Advance its internal register pointer.
+	Wire.SEND(bin2bcd(dt.second()));		// Send data bytes...
+	Wire.SEND(bin2bcd(dt.minute()));			
+	Wire.SEND(bin2bcd(dt.hour()));
 	Wire.SEND(bin2bcd(dt.day()));
-    Wire.endTransmission();						// End the transmission
+	Wire.endTransmission();				// End the transmission
 	
 	// Now the time of the alarm is set, turn it on (or off!)
 	SwitchRegisterBit(DS3231_SPECIAL_CONTROL,DS3231_BIT_A1IE, on );
@@ -178,11 +178,11 @@ void RTC_DS3231::SetAlarm2(DateTime dt, bool on, Alarm2TriggerType type)
 	
 	// Now all bits are set, transmit to DS3231
 	Wire.beginTransmission( DS3231_ADDRESS );		// Wake the correct I2C device.
-	Wire.SEND( DS3231_TIME_ALARM2 );				// Advance its internal register pointer
-	Wire.SEND( mins );								// Send data bytes...
+	Wire.SEND( DS3231_TIME_ALARM2 );			// Advance its internal register pointer
+	Wire.SEND( mins );					// Send data bytes...
 	Wire.SEND( hours );
-    Wire.SEND( date );
-    Wire.endTransmission();							// End the transmission
+	Wire.SEND( date );
+	Wire.endTransmission();					// End the transmission
 
 	// Now the time of the alarm is set, turn it on (or off!)
 	SwitchRegisterBit(DS3231_SPECIAL_CONTROL,DS3231_BIT_A2IE, on );
@@ -195,9 +195,9 @@ void RTC_DS3231::SetAlarm2(DateTime dt, bool on, Alarm2TriggerType type)
 uint8_t RTC_DS3231::GetRegister(uint8_t reg)
 {
 	Wire.beginTransmission(DS3231_ADDRESS);		// Wake the I2C device
-	Wire.SEND(reg);								// Advance its internal register pointer.
-    Wire.endTransmission();						// End the transmission
-    Wire.requestFrom(DS3231_ADDRESS, 1);		// Request 1 byte from device
+	Wire.SEND(reg);					// Advance its internal register pointer.
+ 	Wire.endTransmission();				// End the transmission
+ 	Wire.requestFrom(DS3231_ADDRESS, 1);		// Request 1 byte from device
 	return Wire.RECEIVE();				
 }
 
@@ -208,9 +208,9 @@ uint8_t RTC_DS3231::GetRegister(uint8_t reg)
 void RTC_DS3231::SetRegister(uint8_t reg, uint8_t byte)
 {
 	Wire.beginTransmission(DS3231_ADDRESS);		// Wake the I2C device
-	Wire.SEND(reg);								// Advance its internal register pointer.	
-	Wire.SEND(byte); 							// Send data bytes...
-	Wire.endTransmission();						// End the transmission			
+	Wire.SEND(reg);					// Advance its internal register pointer.	
+	Wire.SEND(byte);				// Send data bytes...
+	Wire.endTransmission();				// End the transmission			
 }
 
 
@@ -380,12 +380,12 @@ uint32_t DateTime::unixtime(void) const
 char* DateTime::toString(char* buf, int maxlen) const
 {
 	snprintf(buf,maxlen,"%02u-%02u-%04u %02u:%02u:%02u",
-			d,    
-			m,
-            2000 + yOff,
-            hh,
-            mm,
-            ss
+		d,    
+		m,
+            	2000 + yOff,
+            	hh,
+            	mm,
+            	ss
         );
     return buf;
 }
