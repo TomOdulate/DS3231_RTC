@@ -10,10 +10,10 @@
 			DateTime class adapted from RTCLib from jeelabs.
 			
 			Board			I2C / TWI pins
-			Uno, Ethernet	A4 (SDA), 	A5 (SCL)
-			Mega2560		20 (SDA), 	21 (SCL)
-			Leonardo		 2 (SDA), 	 3 (SCL)
-			Due				20 (SDA), 	21 (SCL), SDA1, SCL1
+			Uno, Ethernet		A4 (SDA), A5 (SCL)
+			Mega2560		20 (SDA), 21 (SCL)
+			Leonardo		 2 (SDA),  3 (SCL)
+			Due			20 (SDA), 21 (SCL), SDA1, SCL1
 
 ******************************************************************************/
 
@@ -66,21 +66,21 @@
 #define SECONDS_FROM_1970_TO_2000 946684800	// Used by DateTime class
 
 /* AlarmTriggerType enumerations just to simplify setting the alarms. */
-enum Alarm1TriggerType {EverySecond,				// Alarm once per second 
-						SecsMatch,					// Alarm when seconds match 
-						MinsSecsMatch,				// Alarm when minutes and seconds match 
+enum Alarm1TriggerType {EverySecond,						// Alarm once per second 
+						SecsMatch,			// Alarm when seconds match 
+						MinsSecsMatch,			// Alarm when minutes and seconds match 
 						HoursMinsSecsMatch, 		// Alarm when hours, minutes, and seconds match 
 						DateHoursMinsSecsMatch, 	// Alarm when date, hours, minutes, and seconds match 
 						DayHoursMinsSecsMatch };	// Alarm when day, hours, minutes, and seconds match 
 
-enum Alarm2TriggerType {EveryMinute,				// Alarm once per minute (00 seconds of every minute) 
-						MinsMatch, 					// Alarm when minutes match 
-						HoursMinsMatch, 			// Alarm when hours and minutes match
+enum Alarm2TriggerType {EveryMinute,						// Alarm once per minute (00 seconds of every minute) 
+						MinsMatch, 			// Alarm when minutes match 
+						HoursMinsMatch, 		// Alarm when hours and minutes match
 						DateHoursMinsMatch, 		// Alarm when date, hours, and minutes match 
 						DayHoursMinsMatch };		// Alarm when day, hours, and minutes match 
 
-extern uint8_t bcd2bin (uint8_t val);				// Conversion from bcd to decimal
-extern uint8_t bin2bcd (uint8_t val);				// Conversion from decimal to bcd
+extern uint8_t bcd2bin (uint8_t val);						// Conversion from bcd to decimal
+extern uint8_t bin2bcd (uint8_t val);						// Conversion from decimal to bcd
 
 static const uint8_t daysInMonth[] PROGMEM = { 31,28,31,30,31,30,31,31,30,31,30,31 };
 
@@ -99,10 +99,10 @@ class DateTime
 		uint8_t second() const { return ss; }
 		uint8_t dayOfWeek() const;
 
-		long secondstime() const;						// 32-bit times as seconds since 1/1/2000    
-		uint32_t unixtime(void) const;					// 32-bit times as seconds since 1/1/1970    
+		long secondstime() const;			// 32-bit times as seconds since 1/1/2000    
+		uint32_t unixtime(void) const;			// 32-bit times as seconds since 1/1/1970    
 		char* toString(char* buf, int maxlen) const;	// As a string
-		void operator+=(uint32_t);						// Add additional time
+		void operator+=(uint32_t);			// Add additional time
 
 	protected:
 		uint8_t yOff, m, d, hh, mm, ss;
@@ -111,14 +111,14 @@ class DateTime
 class RTC_DS3231
 {
 	public:
-		RTC_DS3231();										// Initialises the wire library, so must be called once	
-		void SetDateTime(const DateTime& dt);				// Set the RTC time (and date!)
-		DateTime now();										// Returns the current time.
+		RTC_DS3231();									// Initialises the wire library, so must be called once	
+		void SetDateTime(const DateTime& dt);						// Set the RTC time (and date!)
+		DateTime now();									// Returns the current time.
 		DateTime GetAlarm1();								// Returns the current Alarm 1 time setting
 		DateTime GetAlarm2();								// Returns the current Alarm 2 time setting
-		uint8_t GetRegister(uint8_t);						// Returns a particular register byte
-		uint8_t SwitchRegisterBit(uint8_t, uint8_t, bool );	// Set an individual register bit on or off
-		void SetRegister(uint8_t, uint8_t);					// Write to a register.
+		uint8_t GetRegister(uint8_t);							// Returns a particular register byte
+		uint8_t SwitchRegisterBit(uint8_t, uint8_t, bool );				// Set an individual register bit on or off
+		void SetRegister(uint8_t, uint8_t);						// Write to a register.
 		void SetAlarm1( DateTime ,bool = true, Alarm1TriggerType = HoursMinsSecsMatch );// Set alarm 1
 		void SetAlarm2( DateTime ,bool = true, Alarm2TriggerType = HoursMinsMatch );	// Set alarm 2
 		double GetTemperature();							// Returns the temperature
